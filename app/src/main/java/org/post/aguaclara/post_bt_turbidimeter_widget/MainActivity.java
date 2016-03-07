@@ -5,7 +5,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -36,6 +35,7 @@ public class MainActivity extends Activity
    int readBufferPosition;
    int counter;
    volatile boolean stopWorker;
+   Intent incomingIntent;
 
    @Override
    public void onCreate(Bundle savedInstanceState)
@@ -43,9 +43,12 @@ public class MainActivity extends Activity
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
 
-       // Get the intent that started this activity
-       Intent intent = getIntent();
-       Uri data = intent.getData();
+      // Get the intent that started this activity
+      Intent intent = getIntent();
+      if (intent.getAction()=="org.post.aguaclara.post_bt_turbidimeter_widget.COLLECT") {
+         incomingIntent=intent;
+      }
+
 
       Button openButton = (Button)findViewById(R.id.open);
       Button sendButton = (Button)findViewById(R.id.send);
@@ -82,12 +85,12 @@ public class MainActivity extends Activity
 
       //Close button
       closeButton.setOnClickListener(new View.OnClickListener() {
-          public void onClick(View v) {
-              try {
-                  closeBT();
-              } catch (IOException ex) {
-              }
-          }
+         public void onClick(View v) {
+            try {
+               closeBT();
+            } catch (IOException ex) {
+            }
+         }
       });
    }
 
@@ -117,7 +120,7 @@ public class MainActivity extends Activity
             }
          }
       }
-      myLabel.setText("Bluetooth Device Found");
+      myLabel.setText(getResources().getString(R.string.bluetooth_connected));
    }
 
    void openBT() throws IOException
@@ -130,7 +133,7 @@ public class MainActivity extends Activity
 
       beginListenForData();
 
-      myLabel.setText("Bluetooth Opened");
+      myLabel.setText(getResources().getString(R.string.bluetooth_connected));
    }
 
    void beginListenForData()
@@ -175,8 +178,10 @@ public class MainActivity extends Activity
 
                               if (allOutput.contains("NTU")) {
                                   int ntuIndex=allOutput.indexOf("NTU")-4;
-                                  myLabel.setText(parseNtu(allOutput));
-//                                  allOutput = "";
+                                  myLabel.setText(String.valueOf(parseNtu(allOutput)));
+                                 Bundle result = new Bundle();
+                                 result.putFloat("textFieldInGroup", parseNtu(allOutput));
+                                 sendToODK(result);
                               }
                           }
                       });
@@ -201,6 +206,19 @@ public class MainActivity extends Activity
       myLabel.setText("Data Sent");
    }
 
+// puts the values asked for by ODK into the returning intent and passes it off to ODK and shuts
+// down the app
+   void sendToODK(Bundle extras){
+      Intent outgoingintent = incomingIntent;
+      for (String key : incomingIntent.getExtras().keySet()) {
+         if (extras.containsKey(key)){
+            outgoingintent.putExtra(key, (String) extras.get(key));
+         }
+      }
+      setResult(RESULT_OK, outgoingintent);
+
+   }
+
    void closeBT() throws IOException
    {
       stopWorker = true;
@@ -209,9 +227,15 @@ public class MainActivity extends Activity
       mmSocket.close();
       myLabel.setText("Bluetooth Closed");
    }
-    public static String parseNtu( String string ){
-        String pattern = "(\\d+)(.)(\\d+)(\\s*)(NTU)";
+    public static float parseNtu( String string ){
+        String first_match = parseWithRegex(string,"(\\d+)(.)(\\d+)(\\s*)(NTU)");
+        String second_match = parseWithRegex(first_match, "(\\d+)(.)(\\d+)");
+        return Float.parseFloat(second_match);
+    }
 
+//  Takes a string and a Java Regex pattern string and returns the first match. Returns empty string
+// if no match exists
+    public static String parseWithRegex(String string, String pattern){
         // Create a Pattern object
         Pattern r = Pattern.compile(pattern);
 
@@ -219,9 +243,7 @@ public class MainActivity extends Activity
         Matcher m = r.matcher(string);
         if (m.find( )) {
             return m.group(0);
-        } else {
-            return "";
-        }
+        } else return "";
     }
 
 }
