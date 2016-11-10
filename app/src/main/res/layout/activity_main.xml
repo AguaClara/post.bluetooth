@@ -43,4 +43,5 @@
         android:layout_toLeftOf="@id/send"
         android:text="Close" />
 
+
 </RelativeLayout>

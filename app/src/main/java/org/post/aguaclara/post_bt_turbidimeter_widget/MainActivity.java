@@ -1,9 +1,12 @@
 package org.post.aguaclara.post_bt_turbidimeter_widget;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -55,16 +58,13 @@ public class MainActivity extends Activity {
       Intent intent = getIntent();
       if (intent.getAction() == "org.post.aguaclara.post_bt_turbidimeter_widget.COLLECT") {
          incomingIntent = intent;
-         //       System.out.println("You got intent!");
-
-         //     makeJsonObject();
-         Double mAnswer = makeJsonObject();
-         //     Double mAnswer = 100.3;
-         incomingIntent.putExtra("value", mAnswer);
-         setResult(RESULT_OK, incomingIntent);
-         //      System.out.println(mAnswer);
-         //     System.out.println(intent.getExtras().get("rawWaterTurbidity"));
-         finish();
+//         //       System.out.println("You got intent!");
+//         Double mAnswer = makeJsonObject();
+//         incomingIntent.putExtra("value", mAnswer);
+//         setResult(RESULT_OK, incomingIntent);
+//         //      System.out.println(mAnswer);
+//         //     System.out.println(intent.getExtras().get("rawWaterTurbidity"));
+//         finish();
       }
 
 
@@ -74,13 +74,44 @@ public class MainActivity extends Activity {
       myLabel = (TextView) findViewById(R.id.label);
       myTextbox = (EditText) findViewById(R.id.entry);
 
+      //Error message for open button
+      final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+      builder.setMessage("Please connect BT Turbidimeter properly and try again")
+              .setTitle("Error!");
+      builder.setPositiveButton("Got it!", new DialogInterface.OnClickListener() {
+         public void onClick(DialogInterface dialog, int id) {
+            dialog.cancel();
+         }
+      });
+
+      final AlertDialog dialog = builder.create();
+
+
+         //Error message for send button
+      AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+      builder2.setMessage("You can't send until Turbidimeter is connected!")
+              .setTitle("Error!");
+      builder2.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+         public void onClick(DialogInterface dialog, int id) {
+            dialog.cancel();
+         }
+      });
+      final AlertDialog dialog2 = builder2.create();
+
+
+
       //Open Button
       openButton.setOnClickListener(new View.OnClickListener() {
          public void onClick(View v) {
             try {
                findBT();
                openBT();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
+               dialog.show();
+               myLabel.setText("No bluetooth adapter available");
+
+
+
             }
          }
       });
@@ -90,7 +121,8 @@ public class MainActivity extends Activity {
          public void onClick(View v) {
             try {
                sendData();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
+               dialog2.show();
             }
          }
       });
@@ -100,7 +132,8 @@ public class MainActivity extends Activity {
          public void onClick(View v) {
             try {
                closeBT();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
+               finish();
             }
          }
       });
@@ -163,6 +196,8 @@ public class MainActivity extends Activity {
                            System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
                            final String data = new String(encodedBytes, "US-ASCII");
                            allOutput = data + " " + allOutput;
+                           //CHANGE: Sends the allOutput String to my method
+                           getDoubleFromString(allOutput);
                            readBufferPosition = 0;
                         } else {
                            readBuffer[readBufferPosition++] = b;
@@ -284,4 +319,22 @@ public class MainActivity extends Activity {
       //fix this later
       return 0.0;
    }
+
+   //This method will take the output (String) from the Turbidimeter, turn it into a JSON Object,
+   //and send the double
+   public void getDoubleFromString(String output){
+      try{
+         JSONObject obj = new JSONObject(output);
+         Double mAnswer = obj.getJSONObject("rd").getJSONObject("tur").getJSONArray("d").getDouble(0);
+         incomingIntent.putExtra("value", mAnswer);
+         setResult(RESULT_OK, incomingIntent);
+         closeBT();
+         finish();
+      }
+      catch(Exception e) {
+         System.out.println(e);
+         finish();
+      }
+   }
+
 }
