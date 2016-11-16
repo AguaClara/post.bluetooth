@@ -3,6 +3,7 @@ package org.post.aguaclara.post_bt_turbidimeter_widget;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -10,10 +11,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 //import org.json.simple.JSONArray;
 //import org.json.simple.JSONObject;
@@ -76,8 +81,8 @@ public class MainActivity extends Activity {
 
       //Error message for open button
       final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-      builder.setMessage("Please connect BT Turbidimeter properly and try again")
-              .setTitle("Error!");
+      builder.setMessage("Go to 'Settings' -> 'Bluetooth' -> 'Paired Devices'. Make sure device HC-06 is paired. Then press 'Open' again.")
+              .setTitle("Error: Device not paired.");
       builder.setPositiveButton("Got it!", new DialogInterface.OnClickListener() {
          public void onClick(DialogInterface dialog, int id) {
             dialog.cancel();
@@ -107,10 +112,24 @@ public class MainActivity extends Activity {
                findBT();
                openBT();
             } catch (Exception ex) {
+
+               //ERROR DIALOG NO IMAGES
                dialog.show();
-               myLabel.setText("No bluetooth adapter available");
 
-
+               //TOAST
+//               LayoutInflater inflater = getLayoutInflater();
+//               View layout = inflater.inflate(R.layout.error,
+//                       (ViewGroup) findViewById(R.id.custom_toast_container));
+//
+//               TextView text = (TextView) layout.findViewById(R.id.text);
+//               text.setText("This is a custom toast");
+//
+//               Toast toast = new Toast(getApplicationContext());
+//               toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+//               toast.setDuration(Toast.LENGTH_LONG);
+//               toast.setView(layout);
+//               toast.show();
+//               myLabel.setText("No bluetooth adapter available");
 
             }
          }
