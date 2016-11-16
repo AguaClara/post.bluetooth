@@ -147,15 +147,15 @@ public class MainActivity extends Activity {
       });
 
       //Close button
-      closeButton.setOnClickListener(new View.OnClickListener() {
-         public void onClick(View v) {
-            try {
-               closeBT();
-            } catch (Exception ex) {
-               finish();
-            }
-         }
-      });
+//      closeButton.setOnClickListener(new View.OnClickListener() {
+//         public void onClick(View v) {
+//            try {
+//               closeBT();
+//            } catch (Exception ex) {
+//               finish();
+//            }
+//         }
+//      });
    }
 
    void findBT() {
