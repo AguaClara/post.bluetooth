@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.lang.Double;
 
 //import org.json.simple.JSONArray;
 //import org.json.simple.JSONObject;
@@ -40,6 +41,7 @@ import java.lang.Object;
 
 public class MainActivity extends Activity {
    TextView myLabel;
+   TextView turbidityLabel;
    EditText myTextbox;
    BluetoothAdapter mBluetoothAdapter;
    BluetoothSocket mmSocket;
@@ -76,7 +78,10 @@ public class MainActivity extends Activity {
       Button openButton = (Button) findViewById(R.id.open);
       Button sendButton = (Button) findViewById(R.id.send);
       Button closeButton = (Button) findViewById(R.id.close);
+      Button testButton = (Button) findViewById(R.id.test);
+      Button acceptButton = (Button) findViewById(R.id.accept);
       myLabel = (TextView) findViewById(R.id.label);
+      turbidityLabel = (TextView) findViewById(R.id.turbidity);
       myTextbox = (EditText) findViewById(R.id.entry);
 
       //Error message for open button
@@ -146,6 +151,28 @@ public class MainActivity extends Activity {
          }
       });
 
+      //Test Button
+      testButton.setOnClickListener(new View.OnClickListener() {
+         public void onClick(View v) {
+            try {
+               test();
+            } catch (Exception ex) {
+               System.out.println(ex);
+            }
+         }
+      });
+
+      //Accept (and close) Button
+      acceptButton.setOnClickListener(new View.OnClickListener() {
+         public void onClick(View v) {
+            try {
+               closeBT();
+            } catch (Exception ex) {
+               System.out.println(ex);
+            }
+         }
+      });
+
       //Close button
 //      closeButton.setOnClickListener(new View.OnClickListener() {
 //         public void onClick(View v) {
@@ -156,6 +183,19 @@ public class MainActivity extends Activity {
 //            }
 //         }
 //      });
+
+
+   }
+
+   void test() {
+
+      //TEST ONLY
+      //Now get the double from the turbidimeter in stead of my method!
+      //a.k.a. get the double from
+      Double mAnswer = makeJsonObject();
+      String finalresult = new Double(mAnswer).toString();
+      turbidityLabel.setText(finalresult);
+
    }
 
    void findBT() {
@@ -191,6 +231,14 @@ public class MainActivity extends Activity {
       beginListenForData();
 
       myLabel.setText(getResources().getString(R.string.bluetooth_connected));
+
+
+//      String stringValue = turbidityLabel.getText().toString();
+//      Double result = Double.parseDouble(stringValue);
+//      incomingIntent.putExtra("value", result);
+//      setResult(RESULT_OK, incomingIntent);
+//      closeBT();
+//      finish();
    }
 
    void beginListenForData() {
@@ -246,10 +294,20 @@ public class MainActivity extends Activity {
    }
 
    void sendData() throws IOException {
-      String msg = myTextbox.getText().toString();
-      msg += "\n";
-      mmOutputStream.write(msg.getBytes());
-      myLabel.setText("Data Sent");
+
+      String stringValue = turbidityLabel.getText().toString();
+      Double result = Double.parseDouble(stringValue);
+      incomingIntent.putExtra("value", result);
+      setResult(RESULT_OK, incomingIntent);
+      //Remember closeBT() will cause issues if the thread thing isn't working, don't include it yet
+      // closeBT();
+      finish();
+
+
+//      String msg = myTextbox.getText().toString();
+//      msg += "\n";
+//      mmOutputStream.write(msg.getBytes());
+//      myLabel.setText("Data Sent");
    }
 
    // puts the values asked for by ODK into the returning intent and passes it off to ODK and shuts
@@ -266,15 +324,18 @@ public class MainActivity extends Activity {
    }
 
    void closeBT() throws IOException {
+
       stopWorker = true;
       mmOutputStream.close();
       mmInputStream.close();
       mmSocket.close();
       myLabel.setText("Bluetooth Closed");
+
    }
 
+
    public static float parseNtu(String string) {
-      //       String first_match = parseWithRegex(string, "(\\d+)(.)(\\d+)(\\s*)(NTU)");
+      String first_match = parseWithRegex(string, "(\\d+)(.)(\\d+)(\\s*)(NTU)");
       String second_match = parseWithRegex(string, "([)(\\d)(.)(\\d)(])");
       return Float.parseFloat(second_match);
    }
@@ -345,14 +406,16 @@ public class MainActivity extends Activity {
       try{
          JSONObject obj = new JSONObject(output);
          Double mAnswer = obj.getJSONObject("rd").getJSONObject("tur").getJSONArray("d").getDouble(0);
-         incomingIntent.putExtra("value", mAnswer);
-         setResult(RESULT_OK, incomingIntent);
-         closeBT();
-         finish();
+         String finalresult = new Double(mAnswer).toString();
+         turbidityLabel.setText(finalresult);
+         // incomingIntent.putExtra("value", mAnswer);
+         // setResult(RESULT_OK, incomingIntent);
+         // closeBT();
+         // finish();
       }
       catch(Exception e) {
          System.out.println(e);
-         finish();
+         //   finish();
       }
    }
 

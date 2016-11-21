@@ -11,6 +11,22 @@
         android:layout_height="400dp"
         android:text="Type here:" />
 
+    <TextView
+        android:id="@+id/turbidity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="50sp"
+        android:gravity="center"
+        android:text="0.0" />
+
+    <Button
+        android:id="@+id/accept"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/turbidity"
+        android:layout_below="@+id/turbidity"
+        android:text="Button One" />
+
     <EditText
         android:id="@+id/entry"
         android:layout_width="fill_parent"
@@ -43,5 +59,12 @@
         android:layout_toLeftOf="@id/send"
         android:text="Close" />
 
+    <Button
+        android:id="@+id/test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/close"
+        android:layout_toLeftOf="@id/close"
+        android:text="Test" />
 
 </RelativeLayout>
