@@ -99,7 +99,7 @@ public class MainActivity extends Activity {
 
          //Error message for send button
       AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
-      builder2.setMessage("You can't send until Turbidimeter is connected!")
+      builder2.setMessage("You can't send now")
               .setTitle("Error!");
       builder2.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
          public void onClick(DialogInterface dialog, int id) {
@@ -224,7 +224,7 @@ public class MainActivity extends Activity {
             }
          }
       }
-      myLabel.setText(getResources().getString(R.string.bluetooth_connected));
+      //myLabel.setText(getResources().getString(R.string.bluetooth_connected));
    }
 
    void openBT() throws IOException {
@@ -237,6 +237,7 @@ public class MainActivity extends Activity {
       beginListenForData();
 
       myLabel.setText(getResources().getString(R.string.bluetooth_connected));
+      turbidityLabel.setText("Press 'Refresh'");
 
 
 //      String stringValue = turbidityLabel.getText().toString();
@@ -338,7 +339,7 @@ public class MainActivity extends Activity {
       mmOutputStream.close();
       mmInputStream.close();
       mmSocket.close();
-      myLabel.setText("Bluetooth Closed");
+      myLabel.setText("Press 'Open' to get another reading. Or press 'Send' if finished.");
 
    }
 
