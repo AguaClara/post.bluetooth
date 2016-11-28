@@ -72,6 +72,8 @@ public class MainActivity extends Activity {
 //         //      System.out.println(mAnswer);
 //         //     System.out.println(intent.getExtras().get("rawWaterTurbidity"));
 //         finish();
+         
+
       }
 
 
@@ -82,6 +84,7 @@ public class MainActivity extends Activity {
       Button acceptButton = (Button) findViewById(R.id.accept);
       myLabel = (TextView) findViewById(R.id.label);
       turbidityLabel = (TextView) findViewById(R.id.turbidity);
+
       myTextbox = (EditText) findViewById(R.id.entry);
 
       //Error message for open button
@@ -237,7 +240,7 @@ public class MainActivity extends Activity {
       beginListenForData();
 
       myLabel.setText(getResources().getString(R.string.bluetooth_connected));
-      turbidityLabel.setText("Press 'Refresh'");
+      turbidityLabel.setText("");
 
 
 //      String stringValue = turbidityLabel.getText().toString();
@@ -308,9 +311,9 @@ public class MainActivity extends Activity {
       incomingIntent.putExtra("value", result);
       setResult(RESULT_OK, incomingIntent);
 
-      //Remember closeBT() will cause issues if the thread thing isn't working, don't include it yet
-      //But remember to incluse closeBT() later!
-      // closeBT();
+      //Only including this closeBT() will allow end user to refresh without having to reopen BT
+      //but greater chance of error if the user closes the app without closing BT.
+      //closeBT();
       finish();
 
 
@@ -339,7 +342,7 @@ public class MainActivity extends Activity {
       mmOutputStream.close();
       mmInputStream.close();
       mmSocket.close();
-      myLabel.setText("Press 'Open' to get another reading. Or press 'Send' if finished.");
+      myLabel.setText("Press OPEN to get another reading.\n\nPress SEND if finished.");
 
    }
 
@@ -418,7 +421,10 @@ public class MainActivity extends Activity {
          Double mAnswer = obj.getJSONObject("rd").getJSONObject("tur").getJSONArray("d").getDouble(0);
          String finalresult = new Double(mAnswer).toString();
          turbidityLabel.setText(finalresult);
+         //this closeBT() closes worker each time. More work, but less chance of error.
          closeBT();
+
+
          // incomingIntent.putExtra("value", mAnswer);
          // setResult(RESULT_OK, incomingIntent);
          // closeBT();

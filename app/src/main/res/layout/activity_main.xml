@@ -18,7 +18,7 @@
         android:layout_height="match_parent"
         android:textSize="50sp"
         android:gravity="center"
-        android:text="Press 'Open'" />
+        android:text="Press OPEN" />
 
     <Button
         android:id="@+id/accept"
@@ -39,18 +39,12 @@
         android:id="@+id/open"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentLeft="true"
         android:layout_below="@id/entry"
         android:layout_marginLeft="10dip"
-        android:text="Open" />
+        android:text="OPEN" />
 
-    <Button
-        android:id="@+id/send"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/open"
-        android:layout_toLeftOf="@id/open"
-        android:text="Send" />
+
 
     <!--<Button-->
         <!--android:id="@+id/close"-->
@@ -64,8 +58,17 @@
         android:id="@+id/test"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/send"
-        android:layout_toLeftOf="@id/send"
-        android:text="Refresh" />
+        android:layout_centerInParent="true"
+        android:layout_alignTop="@id/open"
+
+        android:text="REFRESH" />
+
+    <Button
+        android:id="@+id/send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/test"
+        android:text="SEND" />
 
 </RelativeLayout>
