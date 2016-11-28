@@ -51,20 +51,20 @@
         android:layout_toLeftOf="@id/open"
         android:text="Send" />
 
-    <Button
-        android:id="@+id/close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/send"
-        android:layout_toLeftOf="@id/send"
-        android:text="Close" />
+    <!--<Button-->
+        <!--android:id="@+id/close"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignTop="@id/send"-->
+        <!--android:layout_toLeftOf="@id/send"-->
+        <!--android:text="Close" />-->
 
     <Button
         android:id="@+id/test"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/close"
-        android:layout_toLeftOf="@id/close"
-        android:text="Test" />
+        android:layout_alignTop="@id/send"
+        android:layout_toLeftOf="@id/send"
+        android:text="Refresh Turbidity" />
 
 </RelativeLayout>

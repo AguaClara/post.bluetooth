@@ -77,7 +77,7 @@ public class MainActivity extends Activity {
 
       Button openButton = (Button) findViewById(R.id.open);
       Button sendButton = (Button) findViewById(R.id.send);
-      Button closeButton = (Button) findViewById(R.id.close);
+      //Button closeButton = (Button) findViewById(R.id.close);
       Button testButton = (Button) findViewById(R.id.test);
       Button acceptButton = (Button) findViewById(R.id.accept);
       myLabel = (TextView) findViewById(R.id.label);
@@ -189,12 +189,18 @@ public class MainActivity extends Activity {
 
    void test() {
 
-      //TEST ONLY
-      //Now get the double from the turbidimeter in stead of my method!
-      //a.k.a. get the double from
-      Double mAnswer = makeJsonObject();
-      String finalresult = new Double(mAnswer).toString();
-      turbidityLabel.setText(finalresult);
+      //Now get the double from the turbidimeterin stead of my method!
+      //a.k.a. get the double by calling beginListenForData to refresh the shown value
+
+      //Test stuff (don't use)
+//      Double mAnswer = makeJsonObject();
+//      String finalresult = new Double(mAnswer).toString();
+//      turbidityLabel.setText(finalresult);
+
+      //Actual stuff (change name of this button to "Refresh")
+     // beginListenForData();
+      getDoubleFromString(allOutput);
+
 
    }
 
@@ -264,6 +270,7 @@ public class MainActivity extends Activity {
                            final String data = new String(encodedBytes, "US-ASCII");
                            allOutput = data + " " + allOutput;
                            //CHANGE: Sends the allOutput String to my method
+
                            getDoubleFromString(allOutput);
                            readBufferPosition = 0;
                         } else {
@@ -299,7 +306,9 @@ public class MainActivity extends Activity {
       Double result = Double.parseDouble(stringValue);
       incomingIntent.putExtra("value", result);
       setResult(RESULT_OK, incomingIntent);
+
       //Remember closeBT() will cause issues if the thread thing isn't working, don't include it yet
+      //But remember to incluse closeBT() later!
       // closeBT();
       finish();
 
@@ -332,7 +341,6 @@ public class MainActivity extends Activity {
       myLabel.setText("Bluetooth Closed");
 
    }
-
 
    public static float parseNtu(String string) {
       String first_match = parseWithRegex(string, "(\\d+)(.)(\\d+)(\\s*)(NTU)");
@@ -405,9 +413,11 @@ public class MainActivity extends Activity {
    public void getDoubleFromString(String output){
       try{
          JSONObject obj = new JSONObject(output);
+
          Double mAnswer = obj.getJSONObject("rd").getJSONObject("tur").getJSONArray("d").getDouble(0);
          String finalresult = new Double(mAnswer).toString();
          turbidityLabel.setText(finalresult);
+         closeBT();
          // incomingIntent.putExtra("value", mAnswer);
          // setResult(RESULT_OK, incomingIntent);
          // closeBT();
