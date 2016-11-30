@@ -9,8 +9,8 @@
         android:id="@+id/label"
         android:layout_width="fill_parent"
         android:layout_height="400dp"
-        android:textSize="25sp"
-        android:text="Make sure Bluetooth Turbidimeter is paired first!" />
+        android:textSize="20sp"
+        android:text="\nMake sure Bluetooth Turbidimeter is paired first!" />
 
     <TextView
         android:id="@+id/turbidity"
@@ -54,21 +54,21 @@
         <!--android:layout_toLeftOf="@id/send"-->
         <!--android:text="Close" />-->
 
-    <Button
-        android:id="@+id/test"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_alignTop="@id/open"
+    <!--<Button-->
+        <!--android:id="@+id/test"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--android:layout_alignTop="@id/open"-->
 
-        android:text="REFRESH" />
+        <!--android:text="REFRESH" />-->
 
     <Button
         android:id="@+id/send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@id/test"
-        android:text="SEND" />
+        android:layout_alignTop="@id/open"
+        android:text="RECORD" />
 
 </RelativeLayout>
