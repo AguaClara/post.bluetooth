@@ -90,7 +90,8 @@ public class MainActivity extends Activity {
 
 
       final Button openButton = (Button) findViewById(R.id.open);
-      Button sendButton = (Button) findViewById(R.id.send);
+      final Button sendButton = (Button) findViewById(R.id.send);
+      sendButton.setEnabled(false);
       //Button closeButton = (Button) findViewById(R.id.close);
       //Button testButton = (Button) findViewById(R.id.test);
       Button acceptButton = (Button) findViewById(R.id.accept);
@@ -131,6 +132,7 @@ public class MainActivity extends Activity {
                findBT();
                openBT();
                openButton.setEnabled(false);
+               sendButton.setEnabled(true);
             } catch (Exception ex) {
 
                //ERROR DIALOG NO IMAGES
