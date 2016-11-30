@@ -89,7 +89,7 @@ public class MainActivity extends Activity {
       }
 
 
-      Button openButton = (Button) findViewById(R.id.open);
+      final Button openButton = (Button) findViewById(R.id.open);
       Button sendButton = (Button) findViewById(R.id.send);
       //Button closeButton = (Button) findViewById(R.id.close);
       //Button testButton = (Button) findViewById(R.id.test);
@@ -130,6 +130,7 @@ public class MainActivity extends Activity {
             try {
                findBT();
                openBT();
+               openButton.setEnabled(false);
             } catch (Exception ex) {
 
                //ERROR DIALOG NO IMAGES
@@ -277,6 +278,8 @@ public class MainActivity extends Activity {
       } catch (Exception ex) {
          System.out.println(ex);
       }
+
+
 
       myLabel.setText(getResources().getString(R.string.bluetooth_connected));
       turbidityLabel.setText("");
